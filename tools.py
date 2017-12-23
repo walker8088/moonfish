@@ -115,7 +115,6 @@ def parseFEN(fen):
     init_board = list(256*' ')
     init_board[15::16] = ['\n']*16
     for i, row in enumerate(board.split('/')):
-        #print(row)
         for j, ch in enumerate(row):
             init_board[(i+3) * 16 + j+3] = ch
     init_board = ''.join(init_board)
@@ -125,7 +124,6 @@ def parseFEN(fen):
     score -= sum(pst[p.upper()][0xFE - i] for i,p in enumerate(init_board) if p.islower())
     score -= sum(piece[p.upper()] for i,p in enumerate(init_board) if p.islower())
     
-    #print(score)
     pos = Position(init_board, RED, score)
     return pos if color == 'w' else pos.rotate()
 

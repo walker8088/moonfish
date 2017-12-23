@@ -6,6 +6,17 @@ from itertools import count
 from collections import OrderedDict, namedtuple
 
 ###############################################################################
+# Python 2 compatability
+if sys.version_info[0] == 2:
+    input = raw_input
+    class NewOrderedDict(OrderedDict):
+        def move_to_end(self, key):
+            value = self.pop(key)
+            self[key] = value
+    OrderedDict = NewOrderedDict
+
+
+###############################################################################
 # Piece-Square tables. 
 ###############################################################################
 
@@ -16,7 +27,7 @@ RIGHT = 11
 
 RED, BLACK = range(2)
         
-piece = { 'P': 40, 'C':90, 'N':80, 'R': 190, 'A': 30, 'B':30, 'K': 10000 }
+piece = { 'P': 40, 'C':100, 'N':90, 'R': 200, 'A': 30, 'B':30, 'K': 10000 }
 
 #pst from http://chinesechess.googlecode.com which is dead now 
 pst = {
@@ -28,8 +39,8 @@ pst = {
         0,  0,  0, 19, 24, 32, 37, 37, 37, 32, 24, 19,  0,  0,  0,  0,
         0,  0,  0, 19, 23, 27, 29, 30, 29, 27, 23, 19,  0,  0,  0,  0,
         0,  0,  0, 14, 18, 20, 27, 29, 27, 20, 18, 14,  0,  0,  0,  0,
-        0,  0,  0,  7,  0, 13,  0, 16,  0, 13,  0,  7,  0,  0,  0,  0,
-        0,  0,  0,  7,  0,  7,  0, 15,  0,  7,  0,  7,  0,  0,  0,  0,
+        0,  0,  0,  7,  0, 13,  0, 18,  0, 13,  0,  7,  0,  0,  0,  0,
+        0,  0,  0,  6,  0, 10,  0, 15,  0, 10,  0,  6,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -64,9 +75,9 @@ pst = {
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0, 20,  0, 20,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0, 23,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0, 20,  0, 20,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0, 10,  0, 10,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0, 20,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0, 15,  0, 15,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
@@ -79,11 +90,11 @@ pst = {
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0, 20,  0,  0,  0, 20,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0, 13,  0,  0,  0, 13,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0, 18,  0,  0,  0, 23,  0,  0,  0, 18,  0,  0,  0,  0,
+        0,  0,  0, 10,  0,  0,  0, 20,  0,  0,  0, 10,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0, 23,  0,  0,  0, 23,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0, 15,  0,  0,  0, 15,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
@@ -99,7 +110,7 @@ pst = {
         0,  0,  0, 90, 98,101,102,103,102,101, 98, 90,  0,  0,  0,  0,
         0,  0,  0, 92, 94, 98, 95, 98, 95, 98, 94, 92,  0,  0,  0,  0,
         0,  0,  0, 93, 92, 94, 95, 92, 95, 94, 92, 93,  0,  0,  0,  0,
-        0,  0,  0, 85, 90, 92, 93, 78, 93, 92, 90, 85,  0,  0,  0,  0,
+        0,  0,  0, 85, 90, 92, 93, 85, 93, 92, 90, 85,  0,  0,  0,  0,
         0,  0,  0, 88, 85, 90, 88, 90, 88, 90, 85, 88,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -218,6 +229,85 @@ def load_pad_table(file):
         index += 11
     return True
     
+def iccs2internal(c):
+    fil, rank = ord(c[0]) - ord('a'), int(c[1])
+    return A1 + fil - 0x10*rank
+
+def internal2iccs(i):
+    rank, fil = divmod(i - A1, 0x10)
+    return chr(fil + ord('a')) + str(-rank)
+
+def render2(i,j):
+    return (internal2iccs(i)+internal2iccs(j))
+
+def rotate_move(move):
+    return(0xFE - move[0], 0xFE - move[1])
+    
+uni_pieces = {
+    'K': u"帅",
+    'k': u"将",
+    'A': u"仕",
+    'a': u"士",
+    'B': u"相",
+    'b': u"象",
+    'N': u"马",
+    'n': u"碼",
+    'R': u"车",
+    'r': u"砗",
+    'C': u"炮",
+    'c': u"砲",
+    'P': u"兵",
+    'p': u"卒",
+    '.': u' .',
+}
+
+h_level_index = \
+(
+        (u"九",u"八",u"七",u"六",u"五",u"四",u"三",u"二",u"一"),
+        (u"９",u"８",u"７",u"６",u"５",u"４",u"３",u"２",u"１")
+)
+
+v_change_index = \
+(
+        (u"错", ""u"一", u"二", u"三", u"四", u"五", u"六", u"七", u"八", u"九"),
+        (u"误", ""u"１", u"２", u"３", u"４", u"５", u"６", u"７", u"８", u"９")
+)
+
+def move_to_zh(piece, color, i, j):
+    
+    move_from = (i // 0x10 - TOP, i % 0x10 - LEFT)
+    move_to   = (j // 0x10 - TOP, j % 0x10 - LEFT)
+    
+    diff = (move_to[0]-move_from[0], move_to[1]-move_from[1])
+    base = h_level_index[color][move_from[1]]
+    
+    if diff[0] == 0:
+        change_type = u'平'  
+    elif diff[0] < 0:
+        change_type = u'进' 
+    else:
+        change_type = u'退'
+    
+    if piece in 'NAB': #['N', 'A', 'B']:
+        change = h_level_index[color][move_to[1]]
+    else:
+        change = h_level_index[color][move_to[1]] if (diff[0] == 0) else v_change_index[color][diff[0] if diff[0] > 0 else -diff[0]]
+       
+    return uni_pieces[piece.lower() if color == BLACK else piece] + base + change_type + change
+    
+def print_pos(pos):
+    print()
+    #print('     9  8  7  6  5  4  3  2  1')
+    for i, row in enumerate(pos.board.split()):
+        print('   %d'%(9-i), u' '.join(uni_pieces.get(p, p) for p in row))
+        #print(' %X %d'%(i+3, 9-i), ' '.join(uni_pieces.get(p, p) for p in row))
+        #print(' %X  '%(i+3), ' '.join(uni_pieces.get(p, p) for p in row))
+    print('      a  b  c  d  e  f  g  h  i')
+    #print('      3  4  5  6  7  8  9  A  B')
+    print()
+    print(u'   红方走' if pos.move_color == 0 else u'   黑方走')
+    print()
+    
 ###############################################################################
 # Chess logic
 ###############################################################################
@@ -272,10 +362,11 @@ class Position(namedtuple('Position', 'board move_color score')):
                 for j in count(i + KKK_DIRECTION, KKK_DIRECTION):
                     q = self.board[j]
                     # Stay inside the board, and off pieces
-                    if q.isspace() or q.isalpha(): break
+                    if q.isspace(): continue
                     if q == 'k': #King kill King
                         yield(i,j)
                         break
+                    if q.isalpha(): break    
                 
             elif p == 'A':
                 for d in A_PRE_MOVES:
@@ -341,8 +432,7 @@ class Position(namedtuple('Position', 'board move_color score')):
             new_row = row[1:] + row[0]
             board += new_row                    
         return Position(board, 1 - self.move_color, -self.score)
-        #return Position(self.board[::-1].swapcase(), -self.score)
-    
+        
     def rotate_board(self):
         pos = self.rotate()
         return Position(pos.board, 1 - pos.move_color, pos.score)
@@ -371,7 +461,37 @@ class Position(namedtuple('Position', 'board move_color score')):
             score += piece[q.upper()]
         
         return score
-
+    
+    def is_checked(self):
+        pos = self.rotate()
+        for move in pos.gen_moves():
+            #print(move_to_zh(pos.board[move[0]], pos.move_color, move[0], move[1]))
+            if pos.board[move[1]] == 'k':
+                return True
+        return False  
+        
+    def is_dead(self):
+        #check king still there
+        has_king = False
+        for piece in self.board:
+            if piece == 'K':
+                has_king = True
+                break
+        if not has_king :
+             return True
+             
+        #check being checked
+        if not self.is_checked():
+            return False
+            
+        #check all move     
+        for move in self.gen_moves():
+            #print(move_to_zh(self.board[move[0]], self.move_color, move[0], move[1]))
+            pos = self.move(move)
+            if not pos.rotate().is_checked():
+                return False
+        return True           
+               
 ###############################################################################
 # Search logic
 ###############################################################################
@@ -411,7 +531,7 @@ class Searcher:
                 s(pos) <= r < gamma    if gamma > s(pos)
                 gamma <= r <= s(pos)   if gamma <= s(pos)"""
         self.nodes += 1
-
+        #print('bound depth %d ' % depth, 'BLACK_MOVE' if pos.move_color else 'RED_MOVE  ', 'gamma(%d)' % gamma, 'root' if root else '') 
         # Depth <= 0 is QSearch. Here any position is searched as deeply as is needed for calmness, and so there is no reason to keep different depths in the transposition table.
         depth = max(depth, 0)
 
@@ -455,6 +575,8 @@ class Searcher:
         # Run through the moves, shortcutting when possible
         best = -MATE_UPPER
         for move, score in moves():
+            move_str = 'null_move' if (move == None) else move_to_zh(pos.board[move[0]], pos.move_color, move[0], move[1])
+            #print('depth %d'%depth, 'BLACK_MOVE' if pos.move_color else 'RED_MOVE', score, move_str)
             best = max(best, score)
             if best >= gamma:
                 # Save the move for pv construction and killer heuristic
@@ -468,7 +590,7 @@ class Searcher:
         # However, what if gamma = -10 and we don't have any legal moves?
         # Then the score is actaully a draw and we should fail high!
         # Thus, if best < gamma and best < 0 we need to double check what we are doing.
-        # This doesn't prevent sunfish from making a move that results in stalemate,
+        # This doesn't prevent moonfish from making a move that results in stalemate,
         # but only if depth == 1, so that's probably fair enough.
         # (Btw, at depth 1 we can also mate without realizing.)
         if best < gamma and best < 0 and depth > 0:
@@ -491,7 +613,7 @@ class Searcher:
 
         # In finished games, we could potentially go far enough to cause a recursion
         # limit exception. Hence we bound the ply.
-        for depth in range(1, self.max_depth):
+        for depth in range(1, self.max_depth + 1):
             self.depth = depth
             # The inner loop is a binary search on the score of the position.
             # Inv: lower <= score <= upper
@@ -526,70 +648,43 @@ class Searcher:
 ###############################################################################
 # User interface
 ###############################################################################
-# Python 2 compatability
-if sys.version_info[0] == 2:
-    input = raw_input
-    class NewOrderedDict(OrderedDict):
-        def move_to_end(self, key):
-            value = self.pop(key)
-            self[key] = value
-    OrderedDict = NewOrderedDict
+
+def fen_to_pos(fen):
+    """ Parses a string in Forsyth-Edwards Notation into a Position """
+    board, color = fen.split()[:2]
+    board = re.sub(r'\d', (lambda m: '.'*int(m.group(0))), board)
     
-def iccs2internal(c):
-    fil, rank = ord(c[0]) - ord('a'), int(c[1])
-    return A1 + fil - 0x10*rank
-
-def internal2iccs(i):
-    rank, fil = divmod(i - A1, 0x10)
-    return chr(fil + ord('a')) + str(-rank)
-
-def render2(i,j):
-    return (internal2iccs(i)+internal2iccs(j))
-
-def rotate_move(move):
-    return(0xFE - move[0], 0xFE - move[1])
+    init_board = list(256*' ')
+    init_board[15::16] = ['\n']*16
+    for i, row in enumerate(board.split('/')):
+        for j, ch in enumerate(row):
+            init_board[(i+3) * 16 + j+3] = ch
+    init_board = ''.join(init_board)
     
-uni_pieces = {
-    'K': u"帅",
-    'k': u"将",
-    'A': u"仕",
-    'a': u"士",
-    'B': u"相",
-    'b': u"象",
-    'N': u"马",
-    'n': u"碼",
-    'R': u"车",
-    'r': u"砗",
-    'C': u"炮",
-    'c': u"砲",
-    'P': u"兵",
-    'p': u"卒",
-    '.': u' .',
-}
-
-def print_pos(pos):
-    print()
-    #print('     9  8  7  6  5  4  3  2  1')
-    for i, row in enumerate(pos.board.split()):
-        print('   %d'%(9-i), u' '.join(uni_pieces.get(p, p) for p in row))
-        #print(' %X %d'%(i+3, 9-i), ' '.join(uni_pieces.get(p, p) for p in row))
-        #print(' %X  '%(i+3), ' '.join(uni_pieces.get(p, p) for p in row))
-    print('      a  b  c  d  e  f  g  h  i')
-    #print('      3  4  5  6  7  8  9  A  B')
-    print()
-    print(u'   红方走' if pos.move_color == 0 else u'   黑方走')
-    print()
-
+    score = sum(pst[p][i] for i,p in enumerate(init_board) if p.isupper())
+    score += sum(piece[p] for i,p in enumerate(init_board) if p.isupper())
+    score -= sum(pst[p.upper()][0xFE - i] for i,p in enumerate(init_board) if p.islower())
+    score -= sum(piece[p.upper()] for i,p in enumerate(init_board) if p.islower())
+    
+    pos = Position(init_board, RED, score)
+    return pos if color == 'w' else pos.rotate()
+    
+###############################################################################
 def main():
-    load_pad_table('pad_table.txt')
-    pos = Position(initial, RED, 0)
+    #load_pad_table('pad_table.txt')
+    #pos = Position(initial, RED, 0)
+    #pos = fen_to_pos('1R7/1N1ka2NC/b8/p8/nnb6/5c3/9/1r1p5/2p6/3Kcr3 w')
+    pos = fen_to_pos('1c3R3/1C7/3Nk4/1N4pr1/n5b2/9/9/9/2p1p4/3Knr1c1 w')
     searcher = Searcher()
     while True:
         print_pos(pos)
         
-        if pos.score <= -MATE_LOWER:
-            print(u"你输了")
+        if pos.is_dead():
+            print(u'黑方' if pos.move_color else '红方', "被将死!")
             break
+            
+        if pos.is_checked():
+            print(u'红方' if pos.move_color else '黑方', "将军!")
 
         # We query the user until she enters a (pseudo) legal move.
         #for move in pos.gen_moves():
@@ -604,25 +699,33 @@ def main():
             else:
                 # Inform the user when invalid input (e.g. "help") is entered
                 print("Please enter a move like h2e2")
-                
+        print(move_to_zh(pos.board[move[0]], pos.move_color, move[0], move[1]))        
         pos = pos.move(move)
         # After our move we rotate the board and print it again.
         # This allows us to see the effect of our move.
         print_pos(pos.rotate_board())
         
+        if pos.is_dead():
+            print(u'黑方' if pos.move_color else '红方', "被将死!")
+            break
+            
+        if pos.is_checked():
+            print(u'红方' if pos.move_color else '黑方', "将军!")
+
+
         if pos.score <= -MATE_LOWER:
             print(u"你赢了")
             break
 
         # Fire up the engine to look for a move.
-        move, score, depth = searcher.search(pos, max_depth = 8, secs=7)
-        if score == MATE_UPPER:
-            print(u"将军!")
+        move, score, depth = searcher.search(pos, max_depth = 6, secs=7)
+        #if score == MATE_UPPER:
+        #    print(u"将军!")
 
         # The black player moves from a rotated position, so we have to
         # 'back rotate' the move before printing it.
-        real_move = rotate_move(move)
-        print("My move: %s score: %d depth: %d" % (render2(*real_move), score, depth))
+        #real_move = rotate_move(move)
+        print("My move: %s score: %d depth: %d" % (move_to_zh(pos.board[move[0]], pos.move_color, move[0], move[1]), score, depth))
         pos = pos.move(move)
         
 if __name__ == '__main__':
