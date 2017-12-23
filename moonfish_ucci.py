@@ -1,6 +1,6 @@
 #!/usr/bin/env pypy -u
 # -*- coding: utf-8 -*-
-
+from __future__ import print_function
 import importlib
 import re
 import sys
@@ -15,6 +15,7 @@ from tools import RED, BLACK
 if sys.version_info[0] == 2:
     input = raw_input
 
+'''
 # Disable buffering
 class Unbuffered(object):
     def __init__(self, stream):
@@ -25,6 +26,7 @@ class Unbuffered(object):
     def __getattr__(self, attr):
         return getattr(self.stream, attr)
 sys.stdout = Unbuffered(sys.stdout)
+'''
 
 def main():
     pos = tools.parseFEN(tools.FEN_INITIAL)
@@ -42,7 +44,7 @@ def main():
         if stack:
             smove = stack.pop()
         else: smove = input()
-
+        
         if smove == 'quit':
             break
 
@@ -61,7 +63,7 @@ def main():
                 fen = params[2]
                 pos = tools.parseFEN(fen)
                 color = RED if fen.split()[1] == 'w' else BLACK
-
+            
         elif smove.startswith('go'):
             #  default options
             depth = 1000
@@ -96,7 +98,7 @@ def main():
                     score = int(round((entry.lower + entry.upper)/2))
                     usedtime = int((time.time() - start) * 1000)
                     moves_str = moves if len(moves) < 15 else ''
-                    print('info depth {} score {} time {} nodes {} {}'.format(searcher.depth, score, usedtime, searcher.nodes, moves_str))
+                    print('info depth {} score {} time {} nodes {} pv {}'.format(searcher.depth, score, usedtime, searcher.nodes, moves_str))
 
                 if len(moves) > 5:
                     ponder = moves[1]

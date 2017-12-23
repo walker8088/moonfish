@@ -18,9 +18,9 @@ RED, BLACK = range(2)
         
 piece = { 'P': 40, 'C':90, 'N':80, 'R': 190, 'A': 30, 'B':30, 'K': 10000 }
 
-#pst from http://chinesechess.googlecode.com which is dead 
+#pst from http://chinesechess.googlecode.com which is dead now 
 pst = {
-    'P':(0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+    'P':[0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  9,  9,  9, 11, 13, 11,  9,  9,  9,  0,  0,  0,  0,
@@ -35,9 +35,9 @@ pst = {
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0),
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
           
-    'K':(0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+    'K':[0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -52,9 +52,9 @@ pst = {
         0,  0,  0,  0,  0,  0, 11, 15, 11,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0),
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
         
-     'A':(0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+     'A':[0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -69,9 +69,9 @@ pst = {
         0,  0,  0,  0,  0,  0, 20,  0, 20,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0),
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
         
-    'B':(0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+    'B':[0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -86,9 +86,9 @@ pst = {
         0,  0,  0,  0,  0, 23,  0,  0,  0, 23,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0),
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
         
-    'N':(0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+    'N':[0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0, 90, 90, 90, 96, 90, 96, 90, 90, 90,  0,  0,  0,  0,
@@ -103,9 +103,9 @@ pst = {
         0,  0,  0, 88, 85, 90, 88, 90, 88, 90, 85, 88,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0),
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
         
-    'R':(0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+    'R':[0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,206,208,207,213,214,213,207,208,206,  0,  0,  0,  0,
@@ -120,9 +120,9 @@ pst = {
         0,  0,  0,194,206,204,212,200,212,204,206,194,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0),
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
         
-    'C':(0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+    'C':[0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,100,100, 96, 91, 90, 91, 96,100,100,  0,  0,  0,  0,
@@ -137,8 +137,9 @@ pst = {
         0,  0,  0, 96, 96, 97, 99, 99, 99, 97, 96, 96,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0),
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
 }        
+      
 # Pad tables and join piece and pst dictionaries
 '''
 for k, table in pst.items():
@@ -180,6 +181,7 @@ A_PRE_MOVES = (-0x11, -0x0f, 0x11, 0x0f)
 B_PRE_MOVES = ((-0x1E,-0x0F), (-0x22, -0x17), (0x1E, 0x0F), (0x22, 0x11))
 N_PRE_MOVES = ((-0x21,-0x10), (-0x1F,-0x10), (-0x12,-1), (-0x0E, 1), (0x0E, -1), (0x12, 1), (0x1F,0x10), (0x21, 0x10))
 DIRECTIONS = (0x10, 1, -0x10, -1)
+KKK_DIRECTION = -0x10
 
 # When a MATE is detected, we'll set the score to MATE_UPPER - plies to get there
 # E.g. Mate in 3 will be MATE_UPPER - 6
@@ -191,8 +193,31 @@ TABLE_SIZE = 1e8
 
 # Constants for tuning search
 QS_LIMIT = 150
-EVAL_ROUGHNESS = 20
+#EVAL_ROUGHNESS = 20
+EVAL_ROUGHNESS = 50
 
+###############################################################################
+def load_pad_table(file):
+    with open(file, 'r', encoding = 'utf-8') as f:
+        lines = f.readlines()
+    index = 0    
+    while True:
+        if index >= len(lines):
+            return True
+        piece = lines[index].strip()        
+        if piece not in pst:
+            print("load pad table error at %d %s" % (index+1, piece))
+            return False
+        table = pst[piece]    
+        for i in range(10):
+            values = [int(x) for x in lines[index+i+1].strip().split()]
+            for j in range(9):
+                table[(i+3)*16+j+3] = values[j]
+            #print(values)
+            #print(table[(i+3)*16:(i+4)*16])            
+        index += 11
+    return True
+    
 ###############################################################################
 # Chess logic
 ###############################################################################
@@ -213,7 +238,7 @@ def in_king_house(pos):
 class Position(namedtuple('Position', 'board move_color score')):
     """ A state of a chess game
     board -- a 256 char representation of the board
-    move_color -- WHITE(0), BLACK(1)
+    move_color -- RED(0), BLACK(1)
     score -- the board evaluation
     """
     
@@ -242,7 +267,16 @@ class Position(namedtuple('Position', 'board move_color score')):
                    if q.isspace() or q.isupper(): continue
                    if not in_king_house(j): continue
                    yield(i,j)
-                   
+                
+                #King kill King
+                for j in count(i + KKK_DIRECTION, KKK_DIRECTION):
+                    q = self.board[j]
+                    # Stay inside the board, and off pieces
+                    if q.isspace() or q.isalpha(): break
+                    if q == 'k': #King kill King
+                        yield(i,j)
+                        break
+                
             elif p == 'A':
                 for d in A_PRE_MOVES:
                    j = i+d
@@ -250,7 +284,7 @@ class Position(namedtuple('Position', 'board move_color score')):
                    if q.isspace() or q.isupper(): continue
                    if not in_king_house(j): continue
                    yield(i,j)
-                
+                    
             elif p == 'B':
                 for d, bd in B_PRE_MOVES:
                    j = i+d
@@ -404,7 +438,7 @@ class Searcher:
         # This allows us to define the moves, but only calculate them if needed.
         def moves():
             # First try not moving at all
-            if depth > 0 and not root and any(c in pos.board for c in 'RBN'):
+            if depth > 0 and not root and any(c in pos.board for c in 'RBNC'):
                 yield None, -self.bound(pos.rotate(), 1-gamma, depth-3, root=False)
             # For QSearch we have a different kind of null-move
             if depth == 0:
@@ -466,15 +500,15 @@ class Searcher:
             while lower < upper - EVAL_ROUGHNESS:
                 gamma = (lower+upper+1)//2
                 score = self.bound(pos, gamma, depth)
-                print(depth, score, lower, upper)
                 if score >= gamma:
                     lower = score
                 if score < gamma:
                     upper = score
+                    
             # We want to make sure the move to play hasn't been kicked out of the table,
             # So we make another call that must always fail high and thus produce a move.
             score = self.bound(pos, lower, depth)
-            print('%d Got Score %d\n'%(depth, score))
+            #print('%d Got Score %d\n'%(depth, score))
             # Yield so the user may inspect the search
             yield
 
@@ -547,6 +581,7 @@ def print_pos(pos):
     print()
 
 def main():
+    load_pad_table('pad_table.txt')
     pos = Position(initial, RED, 0)
     searcher = Searcher()
     while True:
@@ -580,7 +615,7 @@ def main():
             break
 
         # Fire up the engine to look for a move.
-        move, score, depth = searcher.search(pos, secs=7)
+        move, score, depth = searcher.search(pos, max_depth = 8, secs=7)
         if score == MATE_UPPER:
             print(u"将军!")
 
