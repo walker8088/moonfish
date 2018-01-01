@@ -25,21 +25,20 @@ def gen_legal_moves(pos):
             yield move, pos1
 
 def mrender(pos, m):
-    # Sunfish always assumes promotion to queen
     p = ''
-    m = m if get_color(pos) == RED else (0xfE-m[0], 0xFE-m[1])
+    m = m if pos.move_color == RED else (181-m[0], 181-m[1])
     return internal2iccs(m[0]) + internal2iccs(m[1]) + p
 
 def mparse(color, move):
     m = (iccs2internal(move[0:2]), iccs2internal(move[2:4]))
-    return m if color == RED else (0xfE--m[0], 0xfE--m[1])
+    return m if color == RED else (181-m[0], 181-m[1])
 
 def renderSAN(pos, move):
     ''' Assumes board is rotated to position of current player '''
     i, j = move
     csrc, cdst = render(i), render(j)
     # Rotate flor black
-    if get_color(pos) == BLACK:
+    if pos.move_color == BLACK:
         csrc, cdst = render(119-i), render(119-j)
     # Check
     pos1 = pos.move(move)
@@ -51,7 +50,7 @@ def renderSAN(pos, move):
             check = '#'
     # Castling
     if pos.board[i] == 'K' and abs(i-j) == 2:
-        if get_color(pos) == RED and j > i or get_color(pos) == BLACK and j < i:
+        if pos.move_color == RED and j > i or pos.move_color == BLACK and j < i:
             return 'O-O' + check
         else:
             return 'O-O-O' + check
@@ -93,43 +92,94 @@ def parseSAN(pos, msan):
         p, src, dst = 'K', 'e[18]', 'g[18]'
     # Find possible match
     for (i, j), _ in gen_legal_moves(pos):
-        if get_color(pos) == RED:
+        if pos.move_color == RED:
             csrc, cdst = render(i), render(j)
         else: csrc, cdst = render(119-i), render(119-j)
         if pos.board[i] == p and re.match(dst,cdst) and re.match(src,csrc):
             return (i, j)
     assert False
 
+###############################################################################
+def load_pad_table(file):
+    with open(file, 'r', encoding = 'utf-8') as f:
+        lines = f.readlines()
+    index = 0    
+    while True:
+        if index >= len(lines):
+            return True
+        piece = lines[index].strip()        
+        if piece not in pst:
+            print("load pad table error at %d %s" % (index+1, piece))
+            return False
+        table = pst[piece]    
+        for i in range(10):
+            values = [int(x) for x in lines[index+i+1].strip().split()]
+            for j in range(9):
+                table[(i+3)*16+j+3] = values[j]
+            #print(values)
+            #print(table[(i+3)*16:(i+4)*16])            
+        index += 11
+    return True
+    
+def load_from_qcb(qcb_file):
+        with open(qcb_file) as f:
+            lines = f.readlines()
+        
+        books = []
+        
+        for line in lines:
+            if line.startswith("*") :
+                continue
+            items = line.strip()
+            books.append(items)
+        
+        return books    
+        
+###############################################################################
+def move_to_zh(board, move):
+    piece = board[move[0]]
+    i, j = move
+    move_from = (i // LINE_WITH - TOP, i % LINE_WITH - LEFT)
+    move_to   = (j // LINE_WITH - TOP, j % LINE_WITH - LEFT)
+    color = 0 if board[i].isupper() else 1
+    #rank, fil = divmod(i - A1, LINE_WITH)
+    
+    diff = (move_to[0]-move_from[0], move_to[1]-move_from[1])
+    base = h_level_index[color][move_from[1]]
+    
+    if diff[0] == 0:
+        change_type = u'平'  
+    elif diff[0] < 0:
+        change_type = u'进' 
+    else:
+        change_type = u'退'
+    
+    if piece in 'NAB': 
+        change = h_level_index[color][move_to[1]]
+    else:
+        change = h_level_index[color][move_to[1]] if (diff[0] == 0) else v_change_index[color][diff[0] if diff[0] > 0 else -diff[0]]
+       
+    return uni_pieces[piece.lower() if color == BLACK else piece] + base + change_type + change
+    
+def print_pos(pos):
+    print()
+    print(u'   红方走' if pos.move_color == 0 else u'   黑方走')
+    #print('     9  8  7  6  5  4  3  2  1')
+    for i, row in enumerate(pos.board.split()):
+        print('   %d'%(9-i), u' '.join(uni_pieces.get(p, p) for p in row))
+        #print(' %X %d'%(i+3, 9-i), ' '.join(uni_pieces.get(p, p) for p in row))
+        #print(' %X  '%(i+3), ' '.join(uni_pieces.get(p, p) for p in row))
+    print('      a  b  c  d  e  f  g  h  i')
+    #print('      3  4  5  6  7  8  9  A  B')
+    print()  
+    
 ################################################################################
 # Parse and Render positions
 ################################################################################
 
-def get_color(pos):
-    return pos.move_color
-
-def parseFEN(fen):
-    """ Parses a string in Forsyth-Edwards Notation into a Position """
-    board, color, _, __, _hclock, _fclock = fen.split()
-    board = re.sub(r'\d', (lambda m: '.'*int(m.group(0))), board)
-    
-    init_board = list(256*' ')
-    init_board[15::16] = ['\n']*16
-    for i, row in enumerate(board.split('/')):
-        for j, ch in enumerate(row):
-            init_board[(i+3) * 16 + j+3] = ch
-    init_board = ''.join(init_board)
-    
-    score = sum(pst[p][i] for i,p in enumerate(init_board) if p.isupper())
-    score += sum(piece[p] for i,p in enumerate(init_board) if p.isupper())
-    score -= sum(pst[p.upper()][0xFE - i] for i,p in enumerate(init_board) if p.islower())
-    score -= sum(piece[p.upper()] for i,p in enumerate(init_board) if p.islower())
-    
-    pos = Position(init_board, RED, score)
-    return pos if color == 'w' else pos.rotate()
-
 def renderFEN(pos, half_move_clock=0, full_move_clock=1):
-    color = 'wb'[get_color(pos)]
-    if get_color(pos) == BLACK:
+    color = 'wb'[pos.move_color]
+    if pos.move_color == BLACK:
         pos = pos.rotate()
     board = '/'.join(pos.board.split())
     board = re.sub(r'\.+', (lambda m: str(len(m.group(0)))), board)
@@ -138,7 +188,26 @@ def renderFEN(pos, half_move_clock=0, full_move_clock=1):
     clock = '{} {}'.format(half_move_clock, full_move_clock)
     return ' '.join((board, color, castling, ep, clock))
 
-
+def parseFEN(fen):
+    """ Parses a string in FEN into a Position """
+    board, color = fen.split()[:2]
+    board = re.sub(r'\d', (lambda m: '.'*int(m.group(0))), board)
+    
+    init_board = list(LINE_WITH*LINE_HEIGHT*' ')
+    init_board[12::13] = ['\n']*14
+    for i, row in enumerate(board.split('/')):
+        for j, ch in enumerate(row):
+            init_board[(i+2) * LINE_WITH + j+2] = ch
+    init_board = ''.join(init_board)
+    
+    score = sum(pst[p][i] for i,p in enumerate(init_board) if p.isupper())
+    score += sum(piece[p] for i,p in enumerate(init_board) if p.isupper())
+    score -= sum(pst[p.upper()][181 - i] for i,p in enumerate(init_board) if p.islower())
+    score -= sum(piece[p.upper()] for i,p in enumerate(init_board) if p.islower())
+    
+    pos = Position(init_board, RED, score)
+    return pos if color == 'w' else pos.rotate()
+    
 ################################################################################
 # Pretty print
 ################################################################################
@@ -146,7 +215,7 @@ def renderFEN(pos, half_move_clock=0, full_move_clock=1):
 def pv(searcher, pos, include_scores=True):
     res = []
     seen_pos = set()
-    color = get_color(pos)
+    color = pos.move_color
     origc = color
     if include_scores:
         res.append(str(pos.score))

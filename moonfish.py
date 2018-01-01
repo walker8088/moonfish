@@ -19,230 +19,122 @@ if sys.version_info[0] == 2:
 ###############################################################################
 # Piece-Square tables. 
 ###############################################################################
-
-TOP = 3
-BUTTOM = 12
-LEFT = 3
-RIGHT = 11
-
-RED, BLACK = range(2)
-        
-piece = { 'P': 40, 'C':100, 'N':90, 'R': 200, 'A': 30, 'B':30, 'K': 10000 }
-
 #pst from http://chinesechess.googlecode.com which is dead now 
 pst = {
-    'P':[0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  9,  9,  9, 11, 13, 11,  9,  9,  9,  0,  0,  0,  0,
-        0,  0,  0, 19, 24, 34, 42, 44, 42, 34, 24, 19,  0,  0,  0,  0,
-        0,  0,  0, 19, 24, 32, 37, 37, 37, 32, 24, 19,  0,  0,  0,  0,
-        0,  0,  0, 19, 23, 27, 29, 30, 29, 27, 23, 19,  0,  0,  0,  0,
-        0,  0,  0, 14, 18, 20, 27, 29, 27, 20, 18, 14,  0,  0,  0,  0,
-        0,  0,  0,  7,  0, 13,  0, 18,  0, 13,  0,  7,  0,  0,  0,  0,
-        0,  0,  0,  6,  0, 10,  0, 15,  0, 10,  0,  6,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    'P':[
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  9,  9,  9, 11, 13, 11,  9,  9,  9,  0,  0,
+        0,  0, 19, 24, 34, 42, 44, 42, 34, 24, 19,  0,  0,
+        0,  0, 19, 24, 32, 37, 37, 37, 32, 24, 19,  0,  0,
+        0,  0, 19, 23, 27, 29, 30, 29, 27, 23, 19,  0,  0,
+        0,  0, 14, 18, 20, 27, 29, 27, 20, 18, 14,  0,  0,
+        0,  0,  7,  0, 13,  0, 18,  0, 13,  0,  7,  0,  0,
+        0,  0,  6,  0, 10,  0, 15,  0, 10,  0,  6,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
           
-    'K':[0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  1,  1,  1,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  2,  2,  2,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0, 11, 15, 11,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    'K':[
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  1,  1,  1,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  2,  2,  2,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0, 11, 15, 11,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
         
-     'A':[0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0, 10,  0, 10,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0, 20,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0, 15,  0, 15,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+     'A':[
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0, 10,  0, 10,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0, 20,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0, 15,  0, 15,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
         
-    'B':[0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0, 13,  0,  0,  0, 13,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0, 10,  0,  0,  0, 20,  0,  0,  0, 10,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0, 15,  0,  0,  0, 15,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    'B':[
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0, 13,  0,  0,  0, 13,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0, 10,  0,  0,  0, 20,  0,  0,  0, 10,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0, 15,  0,  0,  0, 15,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
         
-    'N':[0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0, 90, 90, 90, 96, 90, 96, 90, 90, 90,  0,  0,  0,  0,
-        0,  0,  0, 90, 96,103, 97, 94, 97,103, 96, 90,  0,  0,  0,  0,
-        0,  0,  0, 92, 98, 99,103, 99,103, 99, 98, 92,  0,  0,  0,  0,
-        0,  0,  0, 93,108,100,107,100,107,100,108, 93,  0,  0,  0,  0,
-        0,  0,  0, 90,100, 99,103,104,103, 99,100, 90,  0,  0,  0,  0,
-        0,  0,  0, 90, 98,101,102,103,102,101, 98, 90,  0,  0,  0,  0,
-        0,  0,  0, 92, 94, 98, 95, 98, 95, 98, 94, 92,  0,  0,  0,  0,
-        0,  0,  0, 93, 92, 94, 95, 92, 95, 94, 92, 93,  0,  0,  0,  0,
-        0,  0,  0, 85, 90, 92, 93, 85, 93, 92, 90, 85,  0,  0,  0,  0,
-        0,  0,  0, 88, 85, 90, 88, 90, 88, 90, 85, 88,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    'N':[
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0, 90, 90, 90, 96, 90, 96, 90, 90, 90,  0,  0,
+        0,  0, 90, 96,103, 97, 94, 97,103, 96, 90,  0,  0,
+        0,  0, 92, 98, 99,103, 99,103, 99, 98, 92,  0,  0,
+        0,  0, 93,108,100,107,100,107,100,108, 93,  0,  0,
+        0,  0, 90,100, 99,103,104,103, 99,100, 90,  0,  0,
+        0,  0, 90, 98,101,102,103,102,101, 98, 90,  0,  0,
+        0,  0, 92, 94, 98, 95, 98, 95, 98, 94, 92,  0,  0,
+        0,  0, 93, 92, 94, 95, 92, 95, 94, 92, 93,  0,  0,
+        0,  0, 85, 90, 92, 93, 85, 93, 92, 90, 85,  0,  0,
+        0,  0, 88, 85, 90, 88, 90, 88, 90, 85, 88,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
         
-    'R':[0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,206,208,207,213,214,213,207,208,206,  0,  0,  0,  0,
-        0,  0,  0,206,212,209,216,233,216,209,212,206,  0,  0,  0,  0,
-        0,  0,  0,206,208,207,214,216,214,207,208,206,  0,  0,  0,  0,
-        0,  0,  0,206,213,213,216,216,216,213,213,206,  0,  0,  0,  0,
-        0,  0,  0,208,211,211,214,215,214,211,211,208,  0,  0,  0,  0,
-        0,  0,  0,208,212,212,214,215,214,212,212,208,  0,  0,  0,  0,
-        0,  0,  0,204,209,204,212,214,212,204,209,204,  0,  0,  0,  0,
-        0,  0,  0,198,208,204,212,212,212,204,208,198,  0,  0,  0,  0,
-        0,  0,  0,200,208,206,212,200,212,206,208,200,  0,  0,  0,  0,
-        0,  0,  0,194,206,204,212,200,212,204,206,194,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    'R':[
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,206,208,207,213,214,213,207,208,206,  0,  0,
+        0,  0,206,212,209,216,233,216,209,212,206,  0,  0,
+        0,  0,206,208,207,214,216,214,207,208,206,  0,  0,
+        0,  0,206,213,213,216,216,216,213,213,206,  0,  0,
+        0,  0,208,211,211,214,215,214,211,211,208,  0,  0,
+        0,  0,208,212,212,214,215,214,212,212,208,  0,  0,
+        0,  0,204,209,204,212,214,212,204,209,204,  0,  0,
+        0,  0,198,208,204,212,212,212,204,208,198,  0,  0,
+        0,  0,200,208,206,212,200,212,206,208,200,  0,  0,
+        0,  0,194,206,204,212,200,212,204,206,194,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
         
-    'C':[0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,100,100, 96, 91, 90, 91, 96,100,100,  0,  0,  0,  0,
-        0,  0,  0, 98, 98, 96, 92, 89, 92, 96, 98, 98,  0,  0,  0,  0,
-        0,  0,  0, 97, 97, 96, 91, 92, 91, 96, 97, 97,  0,  0,  0,  0,
-        0,  0,  0, 96, 99, 99, 98,100, 98, 99, 99, 96,  0,  0,  0,  0,
-        0,  0,  0, 96, 96, 96, 96,100, 96, 96, 96, 96,  0,  0,  0,  0,
-        0,  0,  0, 95, 96, 99, 96,100, 96, 99, 96, 95,  0,  0,  0,  0,
-        0,  0,  0, 96, 96, 96, 96, 96, 96, 96, 96, 96,  0,  0,  0,  0,
-        0,  0,  0, 97, 96,100, 99,101, 99,100, 96, 97,  0,  0,  0,  0,
-        0,  0,  0, 96, 97, 98, 98, 98, 98, 98, 97, 96,  0,  0,  0,  0,
-        0,  0,  0, 96, 96, 97, 99, 99, 99, 97, 96, 96,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    'C':[
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,100,100, 96, 91, 90, 91, 96,100,100,  0,  0,
+        0,  0, 98, 98, 96, 92, 89, 92, 96, 98, 98,  0,  0,
+        0,  0, 97, 97, 96, 91, 92, 91, 96, 97, 97,  0,  0,
+        0,  0, 96, 99, 99, 98,100, 98, 99, 99, 96,  0,  0,
+        0,  0, 96, 96, 96, 96,100, 96, 96, 96, 96,  0,  0,
+        0,  0, 95, 96, 99, 96,100, 96, 99, 96, 95,  0,  0,
+        0,  0, 96, 96, 96, 96, 96, 96, 96, 96, 96,  0,  0,
+        0,  0, 97, 96,100, 99,101, 99,100, 96, 97,  0,  0,
+        0,  0, 96, 97, 98, 98, 98, 98, 98, 97, 96,  0,  0,
+        0,  0, 96, 96, 97, 99, 99, 99, 97, 96, 96,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
 }        
-      
-# Pad tables and join piece and pst dictionaries
-'''
-for k, table in pst.items():
-    padrow = lambda row: (0,) + tuple(x+piece[k] for x in row) + (0,)
-    pst[k] = sum((padrow(table[i*16:i*16+16]) for i in range(16)), ())
-    pst[k] = (0,)*20 + pst[k] + (0,)*20
-'''    
-###############################################################################
-# Global constants
-###############################################################################
-
-# Our board is represented as a 256 character string. The padding allows for
-# fast detection of moves that don't stay within the board.
-A1, I1 = 0xC3, 0xCC
-initial = (
-    '               \n'  #   0 - 0F
-    '               \n'  #  10 - 1F
-    '               \n'  #  20 - 2F
-    '   rnbakabnr   \n'  #  30 - 3F
-    '   .........   \n'  #  40 - 4F
-    '   .c.....c.   \n'  #  50 - 5F
-    '   p.p.p.p.p   \n'  #  60 - 6F
-    '   .........   \n'  #  70 - 7F 
-    '   .........   \n'  #  80 - 8F
-    '   P.P.P.P.P   \n'  #  90 - 9F
-    '   .C.....C.   \n'  #  A0 - AF
-    '   .........   \n'  #  B0 - BF
-    '   RNBAKABNR   \n'  #  C0 - CF
-    '               \n'  #  D0 - DF
-    '               \n'  #  E0 - EF
-    '               \n'  #  F0 - FF
-)
-
-# Lists of possible moves for each piece type.
-
-P_PRE_MOVES = (-0x10, -1, 1)
-K_PRE_MOVES = (-0x10, 0x10, -1, 1)
-A_PRE_MOVES = (-0x11, -0x0f, 0x11, 0x0f)
-B_PRE_MOVES = ((-0x1E,-0x0F), (-0x22, -0x17), (0x1E, 0x0F), (0x22, 0x11))
-N_PRE_MOVES = ((-0x21,-0x10), (-0x1F,-0x10), (-0x12,-1), (-0x0E, 1), (0x0E, -1), (0x12, 1), (0x1F,0x10), (0x21, 0x10))
-DIRECTIONS = (0x10, 1, -0x10, -1)
-KKK_DIRECTION = -0x10
-
-# When a MATE is detected, we'll set the score to MATE_UPPER - plies to get there
-# E.g. Mate in 3 will be MATE_UPPER - 6
-MATE_LOWER = piece['K'] - 2 * (piece['R'] + piece['C'] + piece['N'] + piece['A'] + piece['B']) - 5 * piece['P']
-MATE_UPPER = piece['K'] + 2 * (piece['R'] + piece['C'] + piece['N'] + piece['A'] + piece['B']) + 5 * piece['P']
-
-# The table size is the maximum number of elements in the transposition table.
-TABLE_SIZE = 1e8
-
-# Constants for tuning search
-QS_LIMIT = 150
-#EVAL_ROUGHNESS = 20
-EVAL_ROUGHNESS = 50
 
 ###############################################################################
-def load_pad_table(file):
-    with open(file, 'r', encoding = 'utf-8') as f:
-        lines = f.readlines()
-    index = 0    
-    while True:
-        if index >= len(lines):
-            return True
-        piece = lines[index].strip()        
-        if piece not in pst:
-            print("load pad table error at %d %s" % (index+1, piece))
-            return False
-        table = pst[piece]    
-        for i in range(10):
-            values = [int(x) for x in lines[index+i+1].strip().split()]
-            for j in range(9):
-                table[(i+3)*16+j+3] = values[j]
-            #print(values)
-            #print(table[(i+3)*16:(i+4)*16])            
-        index += 11
-    return True
-    
-def iccs2internal(c):
-    fil, rank = ord(c[0]) - ord('a'), int(c[1])
-    return A1 + fil - 0x10*rank
-
-def internal2iccs(i):
-    rank, fil = divmod(i - A1, 0x10)
-    return chr(fil + ord('a')) + str(-rank)
-
-def render2(i,j):
-    return (internal2iccs(i)+internal2iccs(j))
-
-def rotate_move(move):
-    return(0xFE - move[0], 0xFE - move[1])
-    
 uni_pieces = {
     'K': u"帅",
     'k': u"将",
@@ -272,11 +164,68 @@ v_change_index = \
         (u"错", ""u"一", u"二", u"三", u"四", u"五", u"六", u"七", u"八", u"九"),
         (u"误", ""u"１", u"２", u"３", u"４", u"５", u"６", u"７", u"８", u"９")
 )
+       
+###############################################################################
+# Global constants
+###############################################################################
+RED, BLACK = 0, 1
+TOP,LEFT = 2, 2
+LINE_WITH, LINE_HEIGHT = 13, 14
+BUTTOM, RIGHT = TOP + LINE_HEIGHT, LEFT + LINE_WITH
+A0, I0 = 145, 153
+        
+piece = { 'P': 40, 'C':90, 'N':90, 'R': 200, 'A': 30, 'B':30, 'K': 10000 }
 
-def move_to_zh(piece, color, i, j):
-    
-    move_from = (i // 0x10 - TOP, i % 0x10 - LEFT)
-    move_to   = (j // 0x10 - TOP, j % 0x10 - LEFT)
+# Our board is represented as a 182 character string. The padding allows for
+# fast detection of moves that don't stay within the board.
+board_initial = (
+    '            \n'  #   0 - 12
+    '            \n'  #  13 - 25
+    '  rnbakabnr \n'  #  26 - 38
+    '  ......... \n'  #  39 - 51
+    '  .c.....c. \n'  #  52 - 64
+    '  p.p.p.p.p \n'  #  65 - 77
+    '  ......... \n'  #  78 - 90 
+    '  ......... \n'  #  91 - 103
+    '  P.P.P.P.P \n'  # 104 - 116
+    '  .C.....C. \n'  # 117 - 129
+    '  ......... \n'  # 130 - 142
+    '  RNBAKABNR \n'  # 143 - 155
+    '            \n'  # 156 - 168
+    '            \n'  # 169 - 181
+)
+
+# Lists of possible moves for each piece type.
+P_PRE_MOVES = (-13, -1, 1)
+K_PRE_MOVES = (-13, 13, -1, 1)
+A_PRE_MOVES = (-14, -12, 12, 14)
+B_PRE_MOVES = ((-24,-12), (-28, -14), (24, 12), (28, 14))
+N_PRE_MOVES = ((-27,-13), (-25,-13), (-15, -1), (-11, 1), (11, -1), (15, 1), (25,13), (27, 13))
+
+DIRECTIONS = (13, -13,-1, 1)
+KKK_DIRECTION = -13
+
+# When a MATE is detected, we'll set the score to MATE_UPPER - plies to get there
+# E.g. Mate in 3 will be MATE_UPPER - 6
+MATE_LOWER = piece['K'] - 2 * (piece['R'] + piece['C'] + piece['N'] + piece['A'] + piece['B']) - 5 * piece['P']
+MATE_UPPER = piece['K'] + 2 * (piece['R'] + piece['C'] + piece['N'] + piece['A'] + piece['B']) + 5 * piece['P']
+
+# The table size is the maximum number of elements in the transposition table.
+TABLE_SIZE = 1e8
+# Constants for tuning search
+QS_LIMIT = 30 #150
+EVAL_ROUGHNESS = 20
+#EVAL_ROUGHNESS = 50
+
+###############################################################################
+
+def move_to_zh(board, move):
+    piece = board[move[0]]
+    i, j = move
+    move_from = (i // LINE_WITH - TOP, i % LINE_WITH - LEFT)
+    move_to   = (j // LINE_WITH - TOP, j % LINE_WITH - LEFT)
+    color = 0 if board[i].isupper() else 1
+    #rank, fil = divmod(i - A1, LINE_WITH)
     
     diff = (move_to[0]-move_from[0], move_to[1]-move_from[1])
     base = h_level_index[color][move_from[1]]
@@ -288,43 +237,55 @@ def move_to_zh(piece, color, i, j):
     else:
         change_type = u'退'
     
-    if piece in 'NAB': #['N', 'A', 'B']:
+    if piece in 'NAB': 
         change = h_level_index[color][move_to[1]]
     else:
         change = h_level_index[color][move_to[1]] if (diff[0] == 0) else v_change_index[color][diff[0] if diff[0] > 0 else -diff[0]]
        
     return uni_pieces[piece.lower() if color == BLACK else piece] + base + change_type + change
     
-def print_pos(pos):
-    print()
-    #print('     9  8  7  6  5  4  3  2  1')
-    for i, row in enumerate(pos.board.split()):
-        print('   %d'%(9-i), u' '.join(uni_pieces.get(p, p) for p in row))
-        #print(' %X %d'%(i+3, 9-i), ' '.join(uni_pieces.get(p, p) for p in row))
-        #print(' %X  '%(i+3), ' '.join(uni_pieces.get(p, p) for p in row))
-    print('      a  b  c  d  e  f  g  h  i')
-    #print('      3  4  5  6  7  8  9  A  B')
-    print()
-    print(u'   红方走' if pos.move_color == 0 else u'   黑方走')
-    print()
     
 ###############################################################################
-# Chess logic
-###############################################################################
-def valid_pos(i):
-    v_index = i // 0x10 - TOP
-    h_index = i % 0x10 - LEFT
-    if (v_index < 0) or (v_index > 9) : return False 
-    if (h_index < 0) or (h_index > 8) : return False 
-    return True
-    
+
+        
+def iccs2internal(c):
+    fil, rank = ord(c[0]) - ord('a'), int(c[1])
+    return A0 + fil - LINE_WITH*rank
+
+def internal2iccs(i):
+    rank, fil = divmod(i - A0, LINE_WITH)
+    return chr(fil + ord('a')) + str(-rank)
+
+def render2(move, color):
+    i,j = rotate_move(move) if color == BLACK else move
+    return (internal2iccs(i)+internal2iccs(j))
+
+def rotate_move(move):
+    return(181 - move[0], 181 - move[1])
+
 def in_king_house(pos):
-    v_index = pos // 0x10 - TOP
-    h_index = pos % 0x10 - LEFT
+    v_index = pos // LINE_WITH - TOP
+    h_index = pos % LINE_WITH - LEFT
     if (v_index < 7) or (v_index > 9) : return False 
     if (h_index < 3) or (h_index > 5) : return False 
     return True
+        
+###############################################################################
+# Chess logic
+###############################################################################
+class RuleChecker():
+    def __init__(self):
+        self.history = []
     
+    def append_move(self, pos, move):
+        self.history.append((pos, move))
+    
+    def check_ban_move(self, pos):
+        for it in self.history[::-1]:
+            if (it[0].board == pos.board) and it[0].move_color == pos.move_color :
+                return it[1]
+        return None
+        
 class Position(namedtuple('Position', 'board move_color score')):
     """ A state of a chess game
     board -- a 256 char representation of the board
@@ -336,20 +297,35 @@ class Position(namedtuple('Position', 'board move_color score')):
         # For each of our pieces, iterate through each possible 'ray' of moves,
         # as defined in the 'directions' map. The rays are broken e.g. by
         # captures or immediately in case of pieces such as knights.
+        if not self.is_king_live():
+            return   
+        checked = self.is_checked()    
+        for move in self.internal_gen_moves():
+            if checked:
+                pos = self.move(move)
+                if pos.rotate().is_checked():
+                     continue
+            yield move 
+            
+    def internal_gen_moves(self):
+        # For each of our pieces, iterate through each possible 'ray' of moves,
+        # as defined in the 'directions' map. The rays are broken e.g. by
+        # captures or immediately in case of pieces such as knights.
         
         for i, p in enumerate(self.board):
             if not p.isupper(): continue
             
             if p == 'P':
-                #print(hex(i), p)               
                 for d in P_PRE_MOVES:
                    j = i+d
-                   v_line = i // 0x10 - TOP
+                   i_line = i // LINE_WITH - TOP
+                   j_line = j // LINE_WITH - TOP
+                   #兵过河条件
+                   if (i_line > 4) and (j_line == i_line): continue
                    q = self.board[j]
                    if q.isspace() or q.isupper(): continue
                    yield(i,j)
-                   if v_line > 4: break
-            
+                   
             elif p == 'K':
                 for d in K_PRE_MOVES:
                    j = i+d
@@ -379,6 +355,9 @@ class Position(namedtuple('Position', 'board move_color score')):
             elif p == 'B':
                 for d, bd in B_PRE_MOVES:
                    j = i+d
+                   j_line = j // LINE_WITH - TOP
+                   #象不能过河
+                   if (j_line < 5): continue
                    q = self.board[j]
                    if q.isspace() or q.isupper(): continue
                    bq = self.board[i+bd]
@@ -418,33 +397,27 @@ class Position(namedtuple('Position', 'board move_color score')):
                             break                            
                         if q.isalpha():
                             passed_count += 1
-                                
-            else:
-                print('****************Error*****************')
-                return
-                    
+                                        
     def rotate(self):
         ''' Rotates the board, preserving enpassant '''
-        tmp_board = self.board[::-1].swapcase()
-        board = ''
-        for i in range(0x10):
-            row = tmp_board[i * 0x10 : i * 0x10 + 0x10]
-            new_row = row[1:] + row[0]
-            board += new_row                    
-        return Position(board, 1 - self.move_color, -self.score)
-        
+        return Position(self.board[::-1].swapcase(), 1 - self.move_color, -self.score)
+    
+    def nullmove(self):
+        ''' Like rotate'''
+        return Position(self.board[::-1].swapcase(), self.move_color, -self.score)
+            
     def rotate_board(self):
-        pos = self.rotate()
-        return Position(pos.board, 1 - pos.move_color, pos.score)
+        return Position(self.board[::-1].swapcase(), self.move_color, self.score)
         
     def move(self, move):
         i, j = move
         p, q = self.board[i], self.board[j]
         put = lambda board, i, p: board[:i] + p + board[i+1:]
+        
         # Copy variables
         board = self.board
         score = self.score + self.value(move)
-        #print('Move Score %d to %d' % (self.score, score))
+        
         # Actual move
         board = put(board, j, board[i])
         board = put(board, i, '.')
@@ -452,45 +425,45 @@ class Position(namedtuple('Position', 'board move_color score')):
         return Position(board, self.move_color, score).rotate()
 
     def value(self, move):
+        
         i, j = move
         p, q = self.board[i], self.board[j]
         # Actual move
         score = pst[p][j] - pst[p][i]
+        
         # Capture
         if q.islower():
             score += piece[q.upper()]
-        
         return score
     
     def is_checked(self):
         pos = self.rotate()
-        for move in pos.gen_moves():
-            #print(move_to_zh(pos.board[move[0]], pos.move_color, move[0], move[1]))
+        for move in pos.internal_gen_moves():
             if pos.board[move[1]] == 'k':
                 return True
         return False  
-        
-    def is_dead(self):
-        #check king still there
-        has_king = False
+    
+    def is_king_live(self):
         for piece in self.board:
             if piece == 'K':
-                has_king = True
-                break
-        if not has_king :
-             return True
-             
+                return True
+        return False
+         
+    def is_checked_dead(self):
+        #check king still there
+        if not self.is_king_live():
+            return (True, True)
+            
         #check being checked
         if not self.is_checked():
-            return False
+            return (False, False)
             
         #check all move     
         for move in self.gen_moves():
-            #print(move_to_zh(self.board[move[0]], self.move_color, move[0], move[1]))
             pos = self.move(move)
             if not pos.rotate().is_checked():
-                return False
-        return True           
+                return (True, False)
+        return (True, True)           
                
 ###############################################################################
 # Search logic
@@ -525,13 +498,16 @@ class Searcher:
         self.tp_move = LRUCache(TABLE_SIZE)
         self.nodes = 0
         self.max_depth = 100
+        self.ban_move = None
+        self.deep = 0
         
     def bound(self, pos, gamma, depth, root=True):
         """ returns r where
                 s(pos) <= r < gamma    if gamma > s(pos)
                 gamma <= r <= s(pos)   if gamma <= s(pos)"""
+        self.deep += 1
         self.nodes += 1
-        #print('bound depth %d ' % depth, 'BLACK_MOVE' if pos.move_color else 'RED_MOVE  ', 'gamma(%d)' % gamma, 'root' if root else '') 
+        #print('    '*self.deep, 'bound depth %d ' % depth, 'BLACK_MOVE' if pos.move_color else 'RED_MOVE  ', 'gamma(%d)' % gamma, 'root' if root else '') 
         # Depth <= 0 is QSearch. Here any position is searched as deeply as is needed for calmness, and so there is no reason to keep different depths in the transposition table.
         depth = max(depth, 0)
 
@@ -540,15 +516,16 @@ class Searcher:
         # the remaining code has to be comfortable with being mated, stalemated
         # or able to capture the opponent king.
         if pos.score <= -MATE_LOWER:
+            self.deep -= 1
             return -MATE_UPPER
 
-        # Look in the table if we have already searched this position before.
-        # We also need to be sure, that the stored search was over the same
-        # nodes as the current search.
+        #查表确认已经搜索过这个局面了,并确认已存储的搜索也覆盖了该节点
         entry = self.tp_score.get((pos, depth, root), Entry(-MATE_UPPER, MATE_UPPER))
         if entry.lower >= gamma and (not root or self.tp_move.get(pos) is not None):
+            self.deep -= 1
             return entry.lower
         if entry.upper < gamma:
+            self.deep -= 1
             return entry.upper
 
         # Here extensions may be added
@@ -558,29 +535,50 @@ class Searcher:
         # This allows us to define the moves, but only calculate them if needed.
         def moves():
             # First try not moving at all
-            if depth > 0 and not root and any(c in pos.board for c in 'RBNC'):
-                yield None, -self.bound(pos.rotate(), 1-gamma, depth-3, root=False)
-            # For QSearch we have a different kind of null-move
+            if depth > 0 and not root and any(c in pos.board for c in 'PRNC'):  
+                #print('    '*(self.deep), 'yield null move')
+                yield None, -self.bound(pos.nullmove(), 1-gamma, depth-3, root=False)
+                
+            #depth <=0 静态搜索,直接返回该局面的得分
             if depth == 0:
-                yield None, pos.score
+                #yield None, pos.score
+                score = pos.score
+                
+                #将军得分和将死得分
+                go_checked, go_dead = pos.is_checked_dead()
+                if go_checked:
+                   score = score - MATE_UPPER #MATE_LOWER
+                if go_dead:
+                   score = -MATE_UPPER  
+                #print('    '*self.deep, 'yeild score {}'.format(score))
+                
+                yield None, score
+                
             # Then killer move. We search it twice, but the tp will fix things for us. Note, we don't have to check for legality, since we've already done it before. Also note that in QS the killer must be a capture, otherwise we will be non deterministic.
             killer = self.tp_move.get(pos)
             if killer and (depth > 0 or pos.value(killer) >= QS_LIMIT):
+                #print('    '*(self.deep), 'yield killer move', move_to_zh(pos.board, killer))
                 yield killer, -self.bound(pos.move(killer), 1-gamma, depth-1, root=False)
+                
             # Then all the other moves
             for move in sorted(pos.gen_moves(), key=pos.value, reverse=True):
+                if (depth == 1) and root and (move == self.ban_move):
+                    print('ban_move', move)
+                    continue                    
                 if depth > 0 or pos.value(move) >= QS_LIMIT:
+                    #print('    '*(self.deep), 'yield normal move', move_to_zh(pos.board, move))
                     yield move, -self.bound(pos.move(move), 1-gamma, depth-1, root=False)
-
+                    
         # Run through the moves, shortcutting when possible
         best = -MATE_UPPER
         for move, score in moves():
-            move_str = 'null_move' if (move == None) else move_to_zh(pos.board[move[0]], pos.move_color, move[0], move[1])
-            #print('depth %d'%depth, 'BLACK_MOVE' if pos.move_color else 'RED_MOVE', score, move_str)
+            move_str = 'null_move' if (move == None) else move_to_zh(pos.board, move)
+            #print('    '*(self.deep), 'BLACK_MOVE' if pos.move_color else 'RED_MOVE', 'move for depth %d'%depth, move_str, score)
             best = max(best, score)
             if best >= gamma:
                 # Save the move for pv construction and killer heuristic
                 self.tp_move[pos] = move
+                #print('    '*(self.deep), 'save tp move', 'None' if move == None else move_to_zh(pos.board, move))
                 break
 
         # Stalemate checking is a bit tricky: Say we failed low, because
@@ -593,24 +591,27 @@ class Searcher:
         # This doesn't prevent moonfish from making a move that results in stalemate,
         # but only if depth == 1, so that's probably fair enough.
         # (Btw, at depth 1 we can also mate without realizing.)
+        '''
         if best < gamma and best < 0 and depth > 0:
             is_dead = lambda pos: any(pos.value(m) >= MATE_LOWER for m in pos.gen_moves())
             if all(is_dead(pos.move(m)) for m in pos.gen_moves()):
-                in_check = is_dead(pos.rotate())
+                in_check = is_dead(pos.nullmove())
                 best = -MATE_UPPER if in_check else 0
-
+        '''
         # Table part 2
         if best >= gamma:
             self.tp_score[(pos, depth, root)] = Entry(best, entry.upper)
         if best < gamma:
             self.tp_score[(pos, depth, root)] = Entry(entry.lower, best)
 
+        self.deep -= 1
         return best
 
     def _search(self, pos):
         """ Iterative deepening MTD-bi search """
         self.nodes = 0
-
+        self.deep = 0
+        
         # In finished games, we could potentially go far enough to cause a recursion
         # limit exception. Hence we bound the ply.
         for depth in range(1, self.max_depth + 1):
@@ -621,113 +622,33 @@ class Searcher:
             lower, upper = -MATE_UPPER, MATE_UPPER
             while lower < upper - EVAL_ROUGHNESS:
                 gamma = (lower+upper+1)//2
+                #print('searching depth:{} lower:{} upper:{}  gamma:{}'.format(depth, lower, upper, gamma))    
                 score = self.bound(pos, gamma, depth)
                 if score >= gamma:
                     lower = score
                 if score < gamma:
                     upper = score
+                #print('searched depth:{} score:{}'.format(depth, score))    
                     
             # We want to make sure the move to play hasn't been kicked out of the table,
             # So we make another call that must always fail high and thus produce a move.
             score = self.bound(pos, lower, depth)
             #print('%d Got Score %d\n'%(depth, score))
             # Yield so the user may inspect the search
-            yield
+            yield score
 
-    def search(self, pos, secs, max_depth = 12):
+    def search(self, pos, secs = 0, max_depth = 12, ban_move = None):
         self.max_depth = max_depth
+        self.ban_move = ban_move
         start = time.time()
-        for _ in self._search(pos):
-            if time.time() - start > secs:
+        for score in self._search(pos):
+            #将军死和被将军死 才会出现MATE_UPPER的值,后续深度裁剪
+            if (score >= MATE_UPPER) or (score <= -MATE_UPPER): 
                 break
+            #超时
+            if (secs > 0) and (time.time() - start > secs):
+                break
+                
         # If the game hasn't finished we can retrieve our move from the
         # transposition table.
         return self.tp_move.get(pos), self.tp_score.get((pos, self.depth, True)).lower, self.depth
-
-
-###############################################################################
-# User interface
-###############################################################################
-
-def fen_to_pos(fen):
-    """ Parses a string in Forsyth-Edwards Notation into a Position """
-    board, color = fen.split()[:2]
-    board = re.sub(r'\d', (lambda m: '.'*int(m.group(0))), board)
-    
-    init_board = list(256*' ')
-    init_board[15::16] = ['\n']*16
-    for i, row in enumerate(board.split('/')):
-        for j, ch in enumerate(row):
-            init_board[(i+3) * 16 + j+3] = ch
-    init_board = ''.join(init_board)
-    
-    score = sum(pst[p][i] for i,p in enumerate(init_board) if p.isupper())
-    score += sum(piece[p] for i,p in enumerate(init_board) if p.isupper())
-    score -= sum(pst[p.upper()][0xFE - i] for i,p in enumerate(init_board) if p.islower())
-    score -= sum(piece[p.upper()] for i,p in enumerate(init_board) if p.islower())
-    
-    pos = Position(init_board, RED, score)
-    return pos if color == 'w' else pos.rotate()
-    
-###############################################################################
-def main():
-    #load_pad_table('pad_table.txt')
-    #pos = Position(initial, RED, 0)
-    #pos = fen_to_pos('1R7/1N1ka2NC/b8/p8/nnb6/5c3/9/1r1p5/2p6/3Kcr3 w')
-    pos = fen_to_pos('1c3R3/1C7/3Nk4/1N4pr1/n5b2/9/9/9/2p1p4/3Knr1c1 w')
-    searcher = Searcher()
-    while True:
-        print_pos(pos)
-        
-        if pos.is_dead():
-            print(u'黑方' if pos.move_color else '红方', "被将死!")
-            break
-            
-        if pos.is_checked():
-            print(u'红方' if pos.move_color else '黑方', "将军!")
-
-        # We query the user until she enters a (pseudo) legal move.
-        #for move in pos.gen_moves():
-        #    print("%s %X:%X" % (pos.board[move[0]], move[0], move[1]))
-        move = None
-        while move not in pos.gen_moves():
-            match = re.match('([a-i][0-9])'*2, input('Your move: '))
-            if match:
-                move = iccs2internal(match.group(1)), iccs2internal(match.group(2))
-                #print(hex(move[0]),hex(move[1]))
-                #print(render2(*move))
-            else:
-                # Inform the user when invalid input (e.g. "help") is entered
-                print("Please enter a move like h2e2")
-        print(move_to_zh(pos.board[move[0]], pos.move_color, move[0], move[1]))        
-        pos = pos.move(move)
-        # After our move we rotate the board and print it again.
-        # This allows us to see the effect of our move.
-        print_pos(pos.rotate_board())
-        
-        if pos.is_dead():
-            print(u'黑方' if pos.move_color else '红方', "被将死!")
-            break
-            
-        if pos.is_checked():
-            print(u'红方' if pos.move_color else '黑方', "将军!")
-
-
-        if pos.score <= -MATE_LOWER:
-            print(u"你赢了")
-            break
-
-        # Fire up the engine to look for a move.
-        move, score, depth = searcher.search(pos, max_depth = 6, secs=7)
-        #if score == MATE_UPPER:
-        #    print(u"将军!")
-
-        # The black player moves from a rotated position, so we have to
-        # 'back rotate' the move before printing it.
-        #real_move = rotate_move(move)
-        print("My move: %s score: %d depth: %d" % (move_to_zh(pos.board[move[0]], pos.move_color, move[0], move[1]), score, depth))
-        pos = pos.move(move)
-        
-if __name__ == '__main__':
-    main()
-

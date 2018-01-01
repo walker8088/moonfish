@@ -6,10 +6,8 @@ import re
 import sys
 import time
 
+from moonfish import *
 import tools
-import moonfish
-
-from tools import RED, BLACK
 
 # Python 2 compatability
 if sys.version_info[0] == 2:
@@ -29,8 +27,8 @@ sys.stdout = Unbuffered(sys.stdout)
 '''
 
 def main():
-    pos = tools.parseFEN(tools.FEN_INITIAL)
-    searcher = moonfish.Searcher()
+    pos = tools.parseFEN('2ba3r1/5k3/b8/1n3N2C/4p4/3R2R2/9/5p1r1/4p4/5K3 w moves d4d8 d9e8 f6d7 b6d7 g4f4 d7f6 f4f6')#tools.FEN_INITIAL)
+    searcher = Searcher()
     forced = False
     color = RED
     our_time, opp_time = 1000, 1000 # time in centi-seconds
@@ -54,7 +52,7 @@ def main():
         elif smove == 'isready':
             print('readyok')
 
-        elif smove == 'uccinewgame':
+        elif smove == 'newgame':
             stack.append('position fen ' + tools.FEN_INITIAL)
 
         elif smove.startswith('position'):
@@ -90,19 +88,23 @@ def main():
 
             start = time.time()
             ponder = None
-            for _ in searcher._search(pos):
+            for s_score in searcher._search(pos):
                 moves = tools.pv(searcher, pos, include_scores=False)
 
                 if show_thinking:
                     entry = searcher.tp_score.get((pos, searcher.depth, True))
                     score = int(round((entry.lower + entry.upper)/2))
                     usedtime = int((time.time() - start) * 1000)
-                    moves_str = moves if len(moves) < 15 else ''
+                    moves_str = moves #if len(moves) < 15 else ''
                     print('info depth {} score {} time {} nodes {} pv {}'.format(searcher.depth, score, usedtime, searcher.nodes, moves_str))
 
                 if len(moves) > 5:
                     ponder = moves[1]
-
+                
+                #将军死和被将军死 才会出现MATE_UPPER的值
+                if (s_score >= MATE_UPPER) or (s_score <= -MATE_UPPER): 
+                   break
+            
                 if movetime > 0 and (time.time() - start) * 1000 > movetime:
                     break
 
@@ -112,7 +114,7 @@ def main():
             entry = searcher.tp_score.get((pos, searcher.depth, True))
             m, s = searcher.tp_move.get(pos), entry.lower
             # We only resign once we are mated.. That's never?
-            if s == -moonfish.MATE_UPPER:
+            if s == -MATE_UPPER:
                 print('resign')
             else:
                 moves = moves.split(' ')
